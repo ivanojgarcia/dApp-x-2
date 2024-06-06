@@ -1,0 +1,22 @@
+{
+  "name": "dapp-x-2",
+  "version": "1.0.0",
+  "description": "dApp X",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx hardhat test"
+  },
+  "keywords": [
+    "blockchain",
+    "web3"
+  ],
+  "author": "Ivano Garcia",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
