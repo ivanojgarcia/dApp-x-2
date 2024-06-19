@@ -1,3 +1,5 @@
+# Proyecto de una dApp parecida a X (twitter) con el fin de poder almacenar Posts e interactuar con él
+
 # Despliegue de un Contrato Inteligente en la Testnet de Sepolia Usando Hardhat
 
 ## Prerrequisitos

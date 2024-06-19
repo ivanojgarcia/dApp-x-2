@@ -4,6 +4,10 @@
   "description": "dApp X",
   "main": "index.js",
   "scripts": {
+    "clean": "rimraf dist coverage tsconfig.tsbuildinfo",
+    "compile": "npm run clean && tsc -b",
+    "web3": "npm run build && node dist/web3",
+    "app": "npm run compile && node dist/app",
     "test": "npx hardhat test"
   },
   "keywords": [
