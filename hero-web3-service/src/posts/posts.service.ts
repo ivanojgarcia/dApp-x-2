@@ -15,21 +15,13 @@ export class PostsService {
     return 'This action adds a new post';
   }
 
-  async findAll(): Promise<Posts[]> {
+  async findAll(): Promise<any[]> {
     const contractAddress = SMARTCONTRACT_ADDRESS;
     const contract = this.ethersLib.getSmartContract(
       contractAddress,
       ERC20_ABI,
     );
-    const postsResponse = await contract.getPosts();
-    // TODO: Recursive response from the smartContract response
-
-    return [
-      {
-        title: '',
-        description: '',
-      },
-    ];
+    return await contract.getPosts();
   }
 
   findOne(id: number) {

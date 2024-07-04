@@ -8,7 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { Posts } from './types/interfaces/posts.interfaces';
+import { PostsMapper } from './mappers/posts.mapper';
 
 @Controller('posts')
 export class PostsController {
@@ -20,9 +20,9 @@ export class PostsController {
   // }
 
   @Get()
-  findAll(): Promise<Posts[]> {
-    const posts = this.postsService.findAll();
-    return this.postsService.findAll();
+  async findAll(): Promise<any[]> {
+    const posts = await this.postsService.findAll();
+    return PostsMapper.mapContractResponseToPosts(posts);
   }
 
   @Get(':id')
