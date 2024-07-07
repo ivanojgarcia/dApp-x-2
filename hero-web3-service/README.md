@@ -1,73 +1,108 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Proyecto de Desarrollo Blockchain con NestJS y ethers.js
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este proyecto implementa un Backend for Frontend (BFF) utilizando NestJS como gateway para interactuar con un smart contract desplegado en una blockchain. Utiliza TypeScript y ethers.js para la interacción con la blockchain.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Estructura del Proyecto
 
-## Description
+- `src/libs/ethers.provider.ts`: Contiene la librería `EthersLib` para operaciones blockchain.
+- `src/services/core.service.ts`: `CoreService` maneja la interacción entre controladores, servicios y el proveedor.
+- `src/controllers/`: Contiene los controladores principales `UserController` y `PostsController`.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Características Principales
 
-## Installation
+### EthersLib
+
+Librería personalizada para operaciones blockchain:
+- Leer y escribir en smart contracts
+- Crear wallets
+- Obtener balances
+
+### CoreService
+
+Servicio central que:
+- Obtiene balances
+- Proporciona el ABI del smart contract para interacciones
+
+### Controladores
+
+1. **PostsController**
+   - Obtiene todos los posts generados
+   - Ejemplo de método `findAll()`:
+
+   ```typescript
+   async findAll(): Promise<Posts[]> {
+     const contractAddress = SMARTCONTRACT_ADDRESS;
+     const erc20Abi = this.coreService.getABIContract();
+     const contract = this.ethersLib.readSmartContract(
+       contractAddress,
+       erc20Abi,
+     );
+     return await contract.getPosts();
+   }
+   ```
+
+2. **UserController**
+   - Maneja operaciones relacionadas con usuarios
+   - Crea wallets y firma transacciones
+
+   Ejemplo de creación de wallet:
+   ```typescript
+   getSignerFromPrivateKey(privateKey: string) {
+     const wallet = new ethers.Wallet(privateKey, this.getProvider());
+     return wallet;
+   }
+   ```
+
+   Ejemplo de creación de usuario (escritura en contrato):
+   ```typescript
+   async createUser(parameter: UserCreateDto): Promise<void> {
+     const { username } = parameter;
+     const signer = await this.ethersLib.getSigner();
+     const contract = this.writeSmartContract(signer);
+     const userRegistered = await contract.userRegister(username);
+     console.log(userRegistered.hash);
+   }
+
+   private writeSmartContract(signer) {
+     const contractAddress = SMARTCONTRACT_ADDRESS;
+     const erc20Abi = ERC20_ABI;
+     return this.ethersLib.writeSmartContract(contractAddress, erc20Abi, signer);
+   }
+   ```
+
+## Configuración
+
+Asegúrate de configurar las siguientes variables de entorno:
+- `SMARTCONTRACT_ADDRESS`: Dirección del smart contract desplegado
+- Otras configuraciones necesarias para la conexión con la blockchain
+
+## Instalación
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Running the app
+## Ejecución
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start
 ```
 
-## Test
+Para modo de desarrollo:
+```bash
+npm run start:dev
+```
+
+## Pruebas
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run test
 ```
 
-## Support
+## Contribución
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Si deseas contribuir a este proyecto, por favor crea un Pull Request con tus cambios propuestos.
 
-## Stay in touch
+## Licencia
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+[MIT](https://choosealicense.com/licenses/mit/)
