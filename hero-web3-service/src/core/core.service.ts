@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { EthersLib } from 'src/lib/ethers.provider';
+import { AbiItem } from './types/interfaces/core.interface';
+import { EthersLib } from '../libs/ethers.provider';
+import * as AbiJson from './artifacts/contracts/XdAppManagement.json';
 
 @Injectable()
 export class CoreService {
@@ -10,11 +12,19 @@ export class CoreService {
       const balance = await provider.getBalance(address);
       return {
         address: address,
-        balance: this.ethersProvider.getEthersBalance(balance),
+        balance: this.ethersProvider.convertToEther(balance),
       };
     } catch (error) {
       console.log(error.message);
       throw new Error(error.message);
     }
+  }
+
+  getABIContract() {
+    return AbiJson.abi as AbiItem[];
+  }
+
+  getSigner(privateKey: string) {
+    return this.ethersProvider.getSignerFromPrivateKey(privateKey);
   }
 }

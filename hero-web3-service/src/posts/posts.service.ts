@@ -1,25 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { EthersLib } from 'src/lib/ethers.provider';
-import {
-  SMARTCONTRACT_ADDRESS,
-  ERC20_ABI,
-} from '../core/types/constants/smartcontract.constant';
+import { EthersLib } from 'src/libs/ethers.provider';
+import { SMARTCONTRACT_ADDRESS } from '../core/types/constants/smartcontract.constant';
 import { Posts } from './types/interfaces/posts.interfaces';
+import { CoreService } from 'src/core/core.service';
 
 @Injectable()
 export class PostsService {
-  constructor(private readonly ethersLib: EthersLib) {}
+  constructor(
+    private readonly ethersLib: EthersLib,
+    private readonly coreService: CoreService,
+  ) {}
   create(createPostDto: CreatePostDto) {
+    const erc20Abi = this.coreService.getABIContract();
+    const contractAddress = SMARTCONTRACT_ADDRESS;
     return 'This action adds a new post';
   }
 
-  async findAll(): Promise<any[]> {
+  async findAll(): Promise<Posts[]> {
     const contractAddress = SMARTCONTRACT_ADDRESS;
-    const contract = this.ethersLib.getSmartContract(
+    const erc20Abi = this.coreService.getABIContract();
+    const contract = this.ethersLib.readSmartContract(
       contractAddress,
-      ERC20_ABI,
+      erc20Abi,
     );
     return await contract.getPosts();
   }
