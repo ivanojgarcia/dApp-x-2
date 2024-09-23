@@ -87,6 +87,12 @@ npx hardhat vars set SEPOLIA_PRIVATE_KEY
 # Ingresa tu clave privada de Sepolia cuando se te solicite
 ```
 
+Para poder listar las variables seteadas ara hardhat podemos hacer uso del comando:
+```bash
+npx hardhat vars list
+```
+Esto listará el listado de tus variables y la ubicación.
+
 ### 5. Actualizar `hardhat.config.ts`
 
 Crea o actualiza el archivo `hardhat.config.ts`:
@@ -151,6 +157,11 @@ Batch #1
 Deployed Addresses
 
 XdAppManagementModule#XdAppManagement - 0xc9706e70c83544a24206269289f5A129252C2BbA
+```
+
+### Verificar la red de tesnet de despliegue 
+```bash
+npx hardhat ignition verify sepolia-deployment
 ```
 
 ### Logs

@@ -18,12 +18,12 @@
   "license": "ISC",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "hardhat": "^2.22.4"
+    "hardhat": "^2.22.11"
   },
   "dependencies": {
     "@fastify/static": "^7.0.4",
-    "@nestjs/platform-fastify": "^10.3.10",
-    "@nestjs/swagger": "^7.4.0",
+    "@nestjs/platform-fastify": "^10.4.4",
+    "@nestjs/swagger": "^7.4.2",
     "dotenv": "^16.4.5"
   }
 }
