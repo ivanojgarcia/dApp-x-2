@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Headers,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PostsMapper } from './mappers/posts.mapper';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -31,7 +22,6 @@ export class PostsController {
     headers: HeaderUserAdresssDTO,
     @Body() parameters: CreatePostDto,
   ) {
-    console.log('Headers', headers);
     return this.postsService.create(parameters);
   }
 
