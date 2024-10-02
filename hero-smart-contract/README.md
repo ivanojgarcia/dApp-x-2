@@ -174,6 +174,57 @@ Etherscan log
 
 ![Etherscan Logs](assets/etherscan-logs.png)
 
+### ¿Cómo verificar los contratos?
+Primer paso para ello es levantar nuestros nodos de **Hardhat** y para ello ejecutaremos:
+```bash
+npx hardhat node
+```
+
+Paso seguido procederemos a validar los contratos, en este caso solo debemos ejecutar la consola interactiva de Hardhat para eso ejecutaremos el comando 
+```bash
+npx hardhat console --network localhost
+```
+Importante señalar que en este caso la consola se habilitará en la red local siendo esta definida por el flag `--network`. Esto levantará una consola interactiva de Javascript en donde podremos hacer uso de javascript usando etherJS ya incluido en la consola, a continuación algunos script que permitirán validar las funciones e interactuar con los contratos:
+
+**NOTA:** Cuando desplegamos nuestro contrato este retorna las direcciones que necesitaremos para nuestros script.
+
+```javaScript
+// Create the contract instances
+
+const commentManagementAddress = "contract_address_commentManagementAddress";
+const xdAppAddress = "contract_address_xdAppAddress";
+
+const CommentManagement = await ethers.getContractFactory("CommentManagement");
+const commentManagement = await CommentManagement.attach(commentManagementAddress);
+
+let XdAppManagement = await ethers.getContractFactory("XdAppManagement");
+let xdAppManagement = await XdAppManagement.attach(xdAppAddress);
+
+// Get the hardhat account to interact with the contracts
+const [deployer, user1, user2] = await ethers.getSigners();
+
+// User register function
+await xdAppManagement.connect(user1).userRegister("ivano");
+
+// Get the username
+await xdAppManagement.connect(user1).getUser(user1.address);
+
+// Create a post
+await xdAppManagement.connect(user1).createPost("Hello, world!", "This post was created from a Hardhat console");
+
+// Get the post by user
+await xdAppManagement.connect(user1).getUserPostsV2(user1.address);
+
+// add comments to a Post
+await xdAppManagement.connect(user1).addCommentToPost(0, "Great post!", "ivano");
+
+// Get comments by Posts
+await xdAppManagement.connect(user1).getCommentsByPost(0);
+
+// Count Comments
+await xdAppManagement.connect(user1).countComments(0);
+```
+
 
 ## Recursos
 - [Documentación de Hardhat: Desplegar en Redes Remotas](https://hardhat.org/tutorial/deploying-to-a-live-network#deploying-to-remote-networks)
