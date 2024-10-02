@@ -4,7 +4,13 @@ pragma solidity ^0.8.24;
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 
+import "./IComment.sol";
+import "./CommentTypes.sol";
+
 contract XdAppManagement {
+
+    IComment public commentContract;
+
     struct User {
         string username;
         address userAddress;
@@ -22,8 +28,14 @@ contract XdAppManagement {
     }
 
     mapping(uint => Post) private posts;
+    mapping(address => uint[]) private postsByAuthor;
     mapping(address => User) private users;
     uint private postCounter;
+
+    constructor(address _commentContractAddress) {
+        commentContract = IComment(_commentContractAddress);
+    }
+
 
     /* 
     * User Section
@@ -62,6 +74,7 @@ contract XdAppManagement {
         _validateUserExists(author);
         require(bytes(_description).length <= 300, "Description exceeds maximum length of 300 characters");
         posts[postCounter] = Post(postCounter, _title, _description, author, block.timestamp, new address[](0), false);
+        postsByAuthor[msg.sender].push(postCounter);
         postCounter++;
     }
 
@@ -90,7 +103,7 @@ contract XdAppManagement {
         }
         return result;
     }
-
+    /// @custom:deprecated This function will be removing soon
     function getUserPosts(address _author) public view returns (Post[] memory) {
         _validateUserExists(_author);
 
@@ -112,6 +125,29 @@ contract XdAppManagement {
         // console.log(postByAuthor);
         return postByAuthor;
 
+    }
+
+    function getUserPostsV2(address _author) public view returns (uint[] memory, string[] memory, string[] memory, uint[] memory, bool[] memory) {
+    _validateUserExists(_author);
+        _validateUserExists(_author);
+        uint postCount = postsByAuthor[_author].length;
+        uint[] memory ids = new uint[](postCount);
+         string[] memory titles = new string[](postCount);
+        string[] memory descriptions = new string[](postCount);
+        uint[] memory timestamps = new uint[](postCount);
+        bool[] memory isReadFlags = new bool[](postCount);
+
+        for (uint i = 0; i < postCount; i++) {
+            uint postId = postsByAuthor[_author][i];
+            Post storage post = posts[postId];
+
+            ids[i] = post.id;
+            titles[i] = post.title;
+            descriptions[i] = post.description;
+            timestamps[i] = post.timestamp;
+            isReadFlags[i] = post.isRead;
+        }
+        return (ids, titles, descriptions, timestamps, isReadFlags);
     }
 
     function getPosts() public view returns (Post[] memory) {
@@ -138,6 +174,18 @@ contract XdAppManagement {
         }
         // If user has not liked yet, add the like
         post.likes.push(msg.sender);
+    }
+
+    function addCommentToPost(uint _postId, string memory _comment, string memory _username) public {
+        commentContract.addComment(_postId, _comment, _username);
+    }
+
+    function getCommentsByPost(uint _postId) public view returns (Comment[] memory) {
+        return commentContract.getComments(_postId);
+    }
+
+    function countComments(uint _postId) public view returns (uint) {
+        return commentContract.countComments(_postId);
     }
 
     /* 
