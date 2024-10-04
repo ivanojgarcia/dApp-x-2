@@ -128,7 +128,6 @@ contract XdAppManagement {
     }
 
     function getUserPostsV2(address _author) public view returns (uint[] memory, string[] memory, string[] memory, uint[] memory, bool[] memory) {
-    _validateUserExists(_author);
         _validateUserExists(_author);
         uint postCount = postsByAuthor[_author].length;
         uint[] memory ids = new uint[](postCount);
